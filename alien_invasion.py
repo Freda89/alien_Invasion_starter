@@ -28,18 +28,24 @@ class AlienInvasion:
         # Start the main game loop.
         while self.running:
             # Process events requests.
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.running = False
-                    pygame.quit()
-                    sys.exit()
+            self._check_events()
 
                     
-            self.screen.blit(self.bg, (0, 0))  # Draw the background image onto the screen.
-            self.ship.draw()  # Draw the ship on the screen.
+            self._update_screen() 
+
+    def _update_screen(self):
+        self.screen.blit(self.bg, (0, 0))  # Draw the background image onto the screen.
+        self.ship.draw()  # Draw the ship on the screen.
             # Refresh the current frame on the display.
-            pygame.display.flip()
-            self.clock.tick(self.settings.FPS)  # Limit the frame rate to 60
+        pygame.display.flip()
+        self.clock.tick(self.settings.FPS)
+
+    def _check_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+                pygame.quit()
+                sys.exit() # Limit the frame rate to 60
 
 
 if __name__ == '__main__':

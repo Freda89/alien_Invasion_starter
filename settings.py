@@ -9,3 +9,8 @@ class Settings:
         self.screen_h: int = 800  # Height of the game window in pixels.
         self.FPS: int = 60  # Target frames per second for the game loop.
         self.bg_file = Path.cwd() / 'Assets' / 'images' / 'Starbasesnow.png'  # Path to the background image file.
+
+        self.ship_file = Path.cwd() / 'Assets' / 'images' / 'ship2(no bg).png'  # Path to the ship image file.
+        self.ship_w = 40
+        self.ship_h = 60
+        

@@ -1,6 +1,7 @@
 import sys
 import pygame
 from settings import Settings
+from ship import Ship
 
 class AlienInvasion:
 
@@ -20,6 +21,8 @@ class AlienInvasion:
         self.running = True  # Control whether the game loop continues.
         self.clock = pygame.time.Clock()  # Create a clock to manage the frame rate.
 
+        self.ship = Ship(self)  # Create an instance of the Ship class for passing the game
+
 
     def run_game(self):
         # Start the main game loop.
@@ -30,12 +33,15 @@ class AlienInvasion:
                     self.running = False
                     pygame.quit()
                     sys.exit()
+
+                    
             self.screen.blit(self.bg, (0, 0))  # Draw the background image onto the screen.
+            self.ship.draw()  # Draw the ship on the screen.
             # Refresh the current frame on the display.
             pygame.display.flip()
             self.clock.tick(self.settings.FPS)  # Limit the frame rate to 60
 
-            
+
 if __name__ == '__main__':
     ai = AlienInvasion() 
     ai.run_game()  # run the game.

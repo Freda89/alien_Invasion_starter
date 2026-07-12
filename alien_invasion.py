@@ -1,7 +1,9 @@
 import sys
 import pygame
+from pygame.mixer_music import play
 from settings import Settings
 from ship import Ship
+from arsenal import Arsenal
 
 class AlienInvasion:
 
@@ -21,7 +23,14 @@ class AlienInvasion:
         self.running = True  # Control whether the game loop continues.
         self.clock = pygame.time.Clock()  # Create a clock to manage the frame rate.
 
-        self.ship = Ship(self)  # Create an instance of the Ship class for passing the game
+
+
+        pygame.mixer.init()  # Initialize the mixer module for sound playback.
+        self.laser_sound = pygame.mixer.Sound(str(self.settings.laser_sound))  # Load the laser sound effect.
+        self.laser_sound.set_volume(0.5)  # Set the volume of the laser sound effect.
+
+        self.arsenal = Arsenal(self)
+        self.ship = Ship(self, self.arsenal)  # Create an instance of the Ship class for passing the game and arsenal
 
 
     def run_game(self):
@@ -38,7 +47,6 @@ class AlienInvasion:
         self.ship.draw()  # Draw the ship on the screen.
         # Refresh the current frame on the display.
         pygame.display.flip()
-        self.clock.tick(self.settings.FPS)
 
     def _check_events(self):
         for event in pygame.event.get():
@@ -65,6 +73,10 @@ class AlienInvasion:
             self.ship.moving_right = True  # Start moving the ship to the right.
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = True  # Start moving the ship to the left.
+        elif event.key == pygame.K_SPACE:
+            if self.ship.fire():  # Attempt to fire a bullet from the ship's arsenal.
+                self.laser_sound.play()  # Play the laser sound effect if a bullet was successfully fired.
+                self.laser_sound.fadeout(250)  # Fade out the laser sound effect after 100 milliseconds.
         elif event.key == pygame.K_q:
             self.running = False  # Stop the game loop.
             pygame.quit()  # Quit Pygame.

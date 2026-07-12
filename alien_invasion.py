@@ -1,15 +1,25 @@
 import sys
 import pygame
+from settings import Settings
 
 class AlienInvasion:
 
     def __init__(self): 
         pygame.init()  # Initialize Pygame 
+        self.settings = Settings()  
+
         # game window with a fixed size.
-        self.screen = pygame.display.set_mode((1200, 800))
-        pygame.display.set_caption("Alien Invasion")  # the window title.
+        self.screen = pygame.display.set_mode((self.settings.screen_w, self.settings.screen_h))
+        pygame.display.set_caption(self.settings.name)  # the window title.
+        
+
+        self.bg = pygame.image.load(self.settings.bg_file)  # Load the background image.
+        self.bg = pygame.transform.scale(self.bg, (self.settings.screen_w, self.settings.screen_h))  # Scale the background image to fit the screen.
+
 
         self.running = True  # Control whether the game loop continues.
+        self.clock = pygame.time.Clock()  # Create a clock to manage the frame rate.
+
 
     def run_game(self):
         # Start the main game loop.
@@ -20,10 +30,12 @@ class AlienInvasion:
                     self.running = False
                     pygame.quit()
                     sys.exit()
-
+            self.screen.blit(self.bg, (0, 0))  # Draw the background image onto the screen.
             # Refresh the current frame on the display.
             pygame.display.flip()
+            self.clock.tick(self.settings.FPS)  # Limit the frame rate to 60
 
+            
 if __name__ == '__main__':
     ai = AlienInvasion() 
     ai.run_game()  # run the game.

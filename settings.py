@@ -13,4 +13,5 @@ class Settings:
         self.ship_file = Path.cwd() / 'Assets' / 'images' / 'ship2(no bg).png'  # Path to the ship image file.
         self.ship_w = 40
         self.ship_h = 60
+        self.ship_speed = 5  # Speed at which the ship moves across the screen.
         

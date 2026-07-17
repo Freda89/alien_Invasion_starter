@@ -30,8 +30,17 @@ class Alien(Sprite):
 
     def update(self):
         temp_speed = self.settings.fleet_speed  # Get the ship's speed from settings.
-        self.x += temp_speed  # Move the alien to the right.
+
+        if self.check_edges():
+            self.settings.fleet_direction *= -1  # Reverse the fleet direction if an edge is reached.
+            
+        self.x += temp_speed * self.settings.fleet_direction  # Move the alien horizontally based on the fleet direction.
         self.rect.x = self.x  # Update the alien's rect position based on the float value.
+
+
+    def check_edges(self):
+        # Check if the alien has reached the edge of the screen.
+        return (self.rect.right >= self.boundaries.right or self.rect.left <= self.boundaries.left)
 
     def draw_alien(self):
         self.screen.blit(self.image, self.rect)  # Draw the bullet at its current position on the screen.

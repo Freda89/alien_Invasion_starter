@@ -27,3 +27,4 @@ class Settings:
         self.alien_w = 40
         self.alien_h = 40
         self.fleet_speed = 2 # Speed at which the alien fleet moves.
+        self.fleet_direction = 1  # 1 means right, -1 means left.

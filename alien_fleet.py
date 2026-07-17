@@ -28,6 +28,8 @@ class AlienFleet:
 
         for col in range(fleet_w):
             current_x = alien_w * col + x_offset  # Calculate the x-coordinate for the current alien.
+            if col % 2 == 0:
+                continue  
             self._create_alien(current_x, 10)  # Create an alien at the calculated position with a y-coordinate of 10.
 
 

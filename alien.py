@@ -33,9 +33,11 @@ class Alien(Sprite):
 
         if self.check_edges():
             self.settings.fleet_direction *= -1  # Reverse the fleet direction if an edge is reached.
+            self.y += self.settings.fleet_drop_speed  # Move the alien down by the fleet drop speed.
             
         self.x += temp_speed * self.settings.fleet_direction  # Move the alien horizontally based on the fleet direction.
         self.rect.x = self.x  # Update the alien's rect position based on the float value.
+        self.rect.y = self.y  # Update the alien's rect position based on the float value.
 
 
     def check_edges(self):

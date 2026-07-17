@@ -26,5 +26,6 @@ class Settings:
         self.alien_file = Path.cwd() / 'Assets' / 'images' / 'enemy_4.png'  # Alien image file.
         self.alien_w = 40
         self.alien_h = 40
-        self.fleet_speed = 2 # Speed at which the alien fleet moves.
+        self.fleet_speed = 5 # Speed at which the alien fleet moves.
         self.fleet_direction = 1  # 1 means right, -1 means left.
+        self.fleet_drop_speed = 40  # How far the fleet drops down when it hits an edge.

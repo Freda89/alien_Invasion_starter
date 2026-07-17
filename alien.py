@@ -13,6 +13,7 @@ class Alien(Sprite):
         self.screen = fleet.game.screen  # Reference to the game screen.
         self.boundaries = fleet.game.screen.get_rect()  # Get the rectangular area of the screen for boundary checks.
         self.settings = fleet.game.settings  # Access the shared settings.
+        self.fleet = fleet  # Keep the fleet object so direction stays synced.
 
         self.image = pygame.image.load(self.settings.alien_file)  # Load the alien image.
         self.image = pygame.transform.scale(self.image, (self.settings.alien_w, self.settings.alien_h))  # Scale the alien image to the specified width and height.
@@ -31,11 +32,7 @@ class Alien(Sprite):
     def update(self):
         temp_speed = self.settings.fleet_speed  # Get the ship's speed from settings.
 
-        if self.check_edges():
-            self.settings.fleet_direction *= -1  # Reverse the fleet direction if an edge is reached.
-            self.y += self.settings.fleet_drop_speed  # Move the alien down by the fleet drop speed.
-            
-        self.x += temp_speed * self.settings.fleet_direction  # Move the alien horizontally based on the fleet direction.
+        self.x += temp_speed * self.fleet.fleet_direction  # Move the alien horizontally based on the fleet direction.
         self.rect.x = self.x  # Update the alien's rect position based on the float value.
         self.rect.y = self.y  # Update the alien's rect position based on the float value.
 

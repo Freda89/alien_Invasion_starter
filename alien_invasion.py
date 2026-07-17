@@ -41,7 +41,7 @@ class AlienInvasion:
             # Process events requests.
             self._check_events()
             self.ship.update()  # Update the ship's position based on user input. 
-                  
+            self.alien_fleet.update_fleet()     
             self._update_screen() 
             self.clock.tick(self.settings.FPS)  # Limit the frame rate to the target FPS.
 

@@ -21,12 +21,17 @@ class Alien(Sprite):
         self.rect.x = x  # Set the initial x-coordinate of the alien.
         self.rect.y = y  # Set the initial y-coordinate of the alien.
 
+        self.y = float(self.rect.y)  # Store the alien's vertical position as a float for smooth movement.
+        self.x = float(self.rect.x)  # Store the alien's horizontal position as a float for smooth movement.
+
 
         
 
 
     def update(self):
-       pass
+        temp_speed = self.settings.fleet_speed  # Get the ship's speed from settings.
+        self.x += temp_speed  # Move the alien to the right.
+        self.rect.x = self.x  # Update the alien's rect position based on the float value.
 
     def draw_alien(self):
         self.screen.blit(self.image, self.rect)  # Draw the bullet at its current position on the screen.

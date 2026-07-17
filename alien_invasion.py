@@ -1,63 +1,89 @@
 import sys
+
 import pygame
-from pygame.mixer_music import play
+
+from alien_fleet import AlienFleet
+from arsenal import Arsenal
 from settings import Settings
 from ship import Ship
-from arsenal import Arsenal
-from alien_fleet import AlienFleet
+
 
 class AlienInvasion:
+    def __init__(self):
+        pygame.init()
+        pygame.mixer.init()
 
-    def __init__(self): 
-        pygame.init()  # Initialize Pygame 
-        self.settings = Settings()  
+        self.settings = Settings()
+        self.screen = pygame.display.set_mode(
+            (self.settings.screen_w, self.settings.screen_h)
+        )
+        pygame.display.set_caption(self.settings.name)
+        self.clock = pygame.time.Clock()
+        self.running = True
 
-        # game window with a fixed size.
-        self.screen = pygame.display.set_mode((self.settings.screen_w, self.settings.screen_h))
-        pygame.display.set_caption(self.settings.name)  # the window title.
-        
+        # Load the background once so the game does not have to reload it every frame.
+        self.bg = pygame.image.load(self.settings.bg_file)
+        self.bg = pygame.transform.scale(
+            self.bg, (self.settings.screen_w, self.settings.screen_h)
+        )
 
-        self.bg = pygame.image.load(self.settings.bg_file)  # Load the background image.
-        self.bg = pygame.transform.scale(self.bg, (self.settings.screen_w, self.settings.screen_h))  # Scale the background image to fit the screen.
+        self.laser_sound = pygame.mixer.Sound(str(self.settings.laser_sound))
+        self.laser_sound.set_volume(0.5)
 
-
-        self.running = True  # Control whether the game loop continues.
-        self.clock = pygame.time.Clock()  # Create a clock to manage the frame rate.
-
-
-
-        pygame.mixer.init()  # Initialize the mixer module for sound playback.
-        self.laser_sound = pygame.mixer.Sound(str(self.settings.laser_sound))  # Load the laser sound effect.
-        self.laser_sound.set_volume(0.5)  # Set the volume of the laser sound effect.
-
+        # These objects hold the player, bullets, and aliens for the whole game.
         self.arsenal = Arsenal(self)
-        self.ship = Ship(self, self.arsenal)  # Create an instance of the Ship class for passing the game and arsenal
-        self.alien_fleet = AlienFleet(self)  # Create an instance of the AlienFleet class for managing the alien fleet.
-
+        self.ship = Ship(self, self.arsenal)
+        self.alien_fleet = AlienFleet(self)
 
     def run_game(self):
-        # Start the main game loop.
+        # Keep repeating these steps until the player closes the game.
         while self.running:
-            # Process events requests.
             self._check_events()
-            self.ship.update()  # Update the ship's position based on user input. 
-            self.alien_fleet.update_fleet()     
-            self._update_screen() 
-            self.clock.tick(self.settings.FPS)  # Limit the frame rate to the target FPS.
+            self.ship.update()
+            self.alien_fleet.update_fleet()
+            self._check_collisions()
+            self._update_screen()
+            self.clock.tick(self.settings.FPS)
+
+    def _check_collisions(self):
+        # A bullet and alien disappear when their rectangles touch.
+        pygame.sprite.groupcollide(
+            self.arsenal.arsenal, self.alien_fleet.fleet, True, True
+        )
+
+        # Start a fresh wave after the player clears every alien.
+        if not self.alien_fleet.fleet:
+            self._reset_level()
+            return
+
+        # The level also restarts if an alien hits the ship or reaches the bottom.
+        ship_hit = pygame.sprite.spritecollideany(self.ship, self.alien_fleet.fleet)
+        alien_reached_bottom = any(
+            alien.rect.bottom >= self.screen.get_rect().bottom
+            for alien in self.alien_fleet.fleet
+        )
+        if ship_hit or alien_reached_bottom:
+            self._reset_level()
+
+    def _reset_level(self):
+        # Clear old sprites, put the ship back in the middle, and make a new fleet.
+        self.arsenal.arsenal.empty()
+        self.alien_fleet.fleet.empty()
+        self.ship.center_ship()
+        self.alien_fleet.create_fleet()
 
     def _update_screen(self):
-        self.screen.blit(self.bg, (0, 0))  # Draw the background image onto the screen.
-        self.ship.draw()  # Draw the ship on the screen.
-        self.alien_fleet.draw()  # Draw the alien fleet on the screen.
-        # Refresh the current frame on the display.
+        # Draw the background first, then the sprites on top of it.
+        self.screen.blit(self.bg, (0, 0))
+        self.ship.draw()
+        self.alien_fleet.draw()
         pygame.display.flip()
 
     def _check_events(self):
+        # Turn keyboard events into movement or shooting actions.
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.running = False
-                pygame.quit()
-                sys.exit()
+                self._quit_game()
             elif event.type == pygame.KEYDOWN:
                 self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
@@ -65,29 +91,27 @@ class AlienInvasion:
 
     def _check_keyup_events(self, event):
         if event.key == pygame.K_RIGHT:
-            self.ship.moving_right = False  
+            self.ship.moving_right = False
         elif event.key == pygame.K_LEFT:
-            self.ship.moving_left = False 
-
-
-
+            self.ship.moving_left = False
 
     def _check_keydown_events(self, event):
         if event.key == pygame.K_RIGHT:
-            self.ship.moving_right = True  # Start moving the ship to the right.
+            self.ship.moving_right = True
         elif event.key == pygame.K_LEFT:
-            self.ship.moving_left = True  # Start moving the ship to the left.
-        elif event.key == pygame.K_SPACE:
-            if self.ship.fire():  # Attempt to fire a bullet from the ship's arsenal.
-                self.laser_sound.play()  # Play the laser sound effect if a bullet was successfully fired.
-                self.laser_sound.fadeout(250)  # Fade out the laser sound effect after 100 milliseconds.
+            self.ship.moving_left = True
+        elif event.key == pygame.K_SPACE and self.ship.fire():
+            # Only play the sound when a bullet was actually created.
+            self.laser_sound.play()
         elif event.key == pygame.K_q:
-            self.running = False  # Stop the game loop.
-            pygame.quit()  # Quit Pygame.
-            sys.exit()  # Exit the program.
+            self._quit_game()
 
+    def _quit_game(self):
+        # Stop Pygame cleanly before ending the program.
+        self.running = False
+        pygame.quit()
+        sys.exit()
 
 
 if __name__ == '__main__':
-    ai = AlienInvasion() 
-    ai.run_game()  # run the game.
+    AlienInvasion().run_game()

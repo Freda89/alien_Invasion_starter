@@ -5,7 +5,9 @@ import pygame
 from alien_fleet import AlienFleet
 from arsenal import Arsenal
 from settings import Settings
+from game_stats import GameStats
 from ship import Ship
+from time import sleep
 
 
 class AlienInvasion:
@@ -14,6 +16,7 @@ class AlienInvasion:
         pygame.mixer.init()
 
         self.settings = Settings()
+        self.game_stats = GameStats(self.settings.starting_ship_count)
         self.screen = pygame.display.set_mode(
             (self.settings.screen_w, self.settings.screen_h)
         )

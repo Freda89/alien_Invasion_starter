@@ -4,7 +4,7 @@ from pygame.mixer_music import play
 from settings import Settings
 from ship import Ship
 from arsenal import Arsenal
-from alien import Alien
+from alien_fleet import AlienFleet
 
 class AlienInvasion:
 
@@ -32,7 +32,7 @@ class AlienInvasion:
 
         self.arsenal = Arsenal(self)
         self.ship = Ship(self, self.arsenal)  # Create an instance of the Ship class for passing the game and arsenal
-        self.aliens = Alien(self, 10, 10)  # Create an instance of the Alien class for passing the game and initial position
+        self.alien_fleet = AlienFleet(self)  # Create an instance of the AlienFleet class for managing the alien fleet.
 
 
     def run_game(self):
@@ -41,15 +41,14 @@ class AlienInvasion:
             # Process events requests.
             self._check_events()
             self.ship.update()  # Update the ship's position based on user input. 
-            self.aliens.update()  # Update the alien's position based on game logic.        
+                  
             self._update_screen() 
             self.clock.tick(self.settings.FPS)  # Limit the frame rate to the target FPS.
 
     def _update_screen(self):
         self.screen.blit(self.bg, (0, 0))  # Draw the background image onto the screen.
-        self.aliens.draw_alien()  # Draw the alien on the screen.
         self.ship.draw()  # Draw the ship on the screen.
-        self.aliens.draw_alien()  # Draw the alien on the screen.
+        self.alien_fleet.draw()  # Draw the alien fleet on the screen.
         # Refresh the current frame on the display.
         pygame.display.flip()
 

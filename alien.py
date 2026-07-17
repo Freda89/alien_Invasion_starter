@@ -3,16 +3,16 @@ from pygame.sprite import Sprite
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from alien_invasion import AlienInvasion  # Import the AlienInvasion class for type checking.
+    from alien_fleet import AlienFleet  # Import the AlienFleet class for type checking.
 
 
 class Alien(Sprite):
-    def __init__(self, game: 'AlienInvasion', x: float, y: float):
+    def __init__(self, fleet: 'AlienFleet', x: float, y: float):
         super().__init__()  # Initialize the Sprite superclass.
 
-        self.screen = game.screen  # Reference to the game screen.
-        self.boundaries = game.screen.get_rect()  # Get the rectangular area of the screen for boundary checks.
-        self.settings = game.settings  # Access the shared settings.
+        self.screen = fleet.game.screen  # Reference to the game screen.
+        self.boundaries = fleet.game.screen.get_rect()  # Get the rectangular area of the screen for boundary checks.
+        self.settings = fleet.game.settings  # Access the shared settings.
 
         self.image = pygame.image.load(self.settings.alien_file)  # Load the alien image.
         self.image = pygame.transform.scale(self.image, (self.settings.alien_w, self.settings.alien_h))  # Scale the alien image to the specified width and height.

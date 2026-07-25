@@ -18,7 +18,7 @@ class AlienInvasion:
 
         self.settings = Settings()
         self.settings.initialize_dynamic_settings()
-        self.game_stats = GameStats(self.settings.starting_ship_count)
+        self.game_stats = GameStats(self)
         self.screen = pygame.display.set_mode(
             (self.settings.screen_w, self.settings.screen_h)
         )
@@ -73,6 +73,7 @@ class AlienInvasion:
             self._reset_level()
             self.settings.increase_difficulty()
             # update fame stats level
+            self.game_stats.update_level
             # update HUD view
 
     def _reset_level(self):
@@ -84,9 +85,9 @@ class AlienInvasion:
 
 
     def restart_game(self):
-        # self.settings.initialize_dynamic_settings()
-        # reset Game stats
-        # update HUD scores
+        # reset the game state and start fresh
+        self.settings.initialize_dynamic_settings()
+        self.game_stats.reset_stats()
         self._reset_level()
         self.ship.center_ship()
         self.game_stats.game_active = True
@@ -110,12 +111,12 @@ class AlienInvasion:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self._quit_game()
-            elif event.type == pygame.KEYDOWN and self.game_ative == True:
+            elif event.type == pygame.KEYDOWN and self.game_stats.game_active:
                 self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                 self._check_button_clicked()
+                self._check_button_clicked()
 
     def _check_button_clicked(self):
         mouse_pos = pygame.mouse.get_pos()

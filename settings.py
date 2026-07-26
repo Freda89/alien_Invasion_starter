@@ -1,4 +1,11 @@
+"""Program: Alien Invasion
+Author: Freda Acquah
+Purpose: Define game settings, screen dimensions, and asset paths for the Alien Invasion project.
+Date: 2026-07-26
+"""
+
 from pathlib import Path
+
 
 class Settings:
     # This is the one place to change the game's sizes and speeds.
@@ -7,18 +14,18 @@ class Settings:
         self.name: str = "Alien Invasion"
         self.screen_w: int = 1200
         self.screen_h: int = 800
-        self.FPS: int = 60  # Higher FPS makes the game update more often each second.
-        self.bg_file = Path.cwd() / 'Assets' / 'images' / 'Starbasesnow.png'
+        self.FPS: int = 60  
+        self.bg_file = Path.cwd() / 'Assets' / 'images' / 'Background.png'
         self.difficulty_scale = 1.1
         self.scores_file = Path.cwd() / 'Assets' / 'files' / 'scores.json'
 
-        self.ship_file = Path.cwd() / 'Assets' / 'images' / 'ship2(no bg).png'
+        self.ship_file = Path.cwd() / 'Assets' / 'images' / 'Ship.png'
         self.ship_w = 40
         self.ship_h = 60
         self.ship_speed = 5
         self.starting_ship_count = 3
 
-        self.bullet_file = Path.cwd() / 'Assets' / 'images' / 'laserBlast.png'
+        self.bullet_file = Path.cwd() / 'Assets' / 'images' / 'LaserBlast.png'
         self.laser_sound = Path.cwd() / 'Assets' / 'sound' / 'laser.mp3'
         self.impact_sound = Path.cwd() / 'Assets' / 'sound' / 'impactSound.mp3'
         self.bullet_speed = 5
@@ -28,8 +35,8 @@ class Settings:
         self.alien_file = Path.cwd() / 'Assets' / 'images' / 'enemy_4.png'
         self.alien_w = 40
         self.alien_h = 40
-        self.fleet_speed = 2
-        self.fleet_drop_speed = 40  # Bigger number means the aliens get closer faster.
+        self.fleet_speed = 1
+        self.fleet_drop_speed = 20  # Bigger number means the aliens get closer faster.
 
 
         self.button_w = 200
@@ -50,8 +57,8 @@ class Settings:
         self.bullet_speed = 5
         self.bullets_amount = 3
 
-        self.fleet_speed = 2
-        self.fleet_drop_speed = 40
+        self.fleet_speed = 1
+        self.fleet_drop_speed = 20
         self.alien_points = 50 
 
     def increase_difficulty(self):

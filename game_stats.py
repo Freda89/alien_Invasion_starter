@@ -1,4 +1,9 @@
-# from pathlib import Path
+"""Program: Alien Invasion
+Author: Freda Acquah
+Purpose: Track score, level, lives, high-score data for the game.
+Date: 2026-07-26
+"""
+
 import json
 from typing import TYPE_CHECKING
 

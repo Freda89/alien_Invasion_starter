@@ -1,3 +1,9 @@
+"""Program: Alien Invasion
+Author: Freda Acquah
+Purpose: Define the player's ship movement behavior for the Alien Invasion game.
+Date: 2026-07-26
+"""
+
 import pygame
 from typing import TYPE_CHECKING
 

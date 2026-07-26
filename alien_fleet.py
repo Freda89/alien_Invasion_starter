@@ -1,3 +1,9 @@
+"""Program: Alien Invasion
+Author: Freda Acquah
+Purpose: Manage the alien fleet, its formation, and movement.
+Date: 2026-07-26
+"""
+
 import pygame
 from typing import TYPE_CHECKING
 from alien import Alien

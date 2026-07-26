@@ -1,5 +1,10 @@
-import sys
+"""Program: Alien Invasion
+Author: Freda Acquah
+Purpose: Run the Alien Invasion game.
+Date: 2026-07-26
+"""
 
+import sys
 import pygame
 
 from alien_fleet import AlienFleet
@@ -24,7 +29,7 @@ class AlienInvasion:
         self.screen = pygame.display.set_mode(
             (self.settings.screen_w, self.settings.screen_h)
         )
-        pygame.display.set_caption(self.settings.name)
+        pygame.display.set_caption(f"{self.settings.name} - Track 2")
         self.clock = pygame.time.Clock()
         self.running = True
         self.HUD = HUD(self)
@@ -49,9 +54,10 @@ class AlienInvasion:
         # Keep repeating these steps until the player closes the game.
         while self.running:
             self._check_events()
-            self.ship.update()
-            self.alien_fleet.update_fleet()
-            self._check_collisions()
+            if self.game_stats.game_active:
+                self.ship.update()
+                self.alien_fleet.update_fleet()
+                self._check_collisions()
             self._update_screen()
             self.clock.tick(self.settings.FPS)
 

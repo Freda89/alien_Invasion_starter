@@ -1,3 +1,9 @@
+"""Program: Alien Invasion
+Author: Freda Acquah
+Purpose: Define the alien movement behavior for the game fleet.
+Date: 2026-07-26
+"""
+
 import pygame
 from pygame.sprite import Sprite
 from typing import TYPE_CHECKING

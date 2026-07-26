@@ -1,3 +1,9 @@
+"""Program: Alien Invasion
+Author: Freda Acquah
+Purpose: Render the heads-up display for scores, level, and ship lives.
+Date: 2026-07-26
+"""
+
 import pygame.font
 from typing import TYPE_CHECKING
 

@@ -1,3 +1,9 @@
+"""Program: Alien Invasion
+Author: Freda Acquah
+Purpose: Manage the player's bullet arsenal.
+Date: 2026-07-26
+"""
+
 import pygame
 from typing import TYPE_CHECKING
 

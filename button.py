@@ -1,3 +1,9 @@
+"""Program: Alien Invasion
+Author: Freda Acquah
+Purpose: Create the start/play button displayed before the game begins.
+Date: 2026-07-26
+"""
+
 import pygame.font
 
 from typing import TYPE_CHECKING

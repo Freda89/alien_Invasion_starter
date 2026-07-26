@@ -66,6 +66,11 @@ class AlienInvasion:
 
         # Start a fresh wave after the player clears every alien.
         if not self.alien_fleet.fleet:
+            # advance difficulty and level when the wave is cleared
+            self.settings.increase_difficulty()
+            self.game_stats.update_level()
+            self.HUD.update_scores()
+            self.HUD.update_level()
             self._reset_level()
             return
 
@@ -81,6 +86,7 @@ class AlienInvasion:
             # update game stats level
             self.game_stats.update_level()
             self.HUD.update_scores()
+            self.HUD.update_level()
             # update HUD view
 
     def _reset_level(self):
@@ -96,6 +102,7 @@ class AlienInvasion:
         self.settings.initialize_dynamic_settings()
         self.game_stats.reset_stats()
         self.HUD.update_scores()
+        self.HUD.update_level()
         self._reset_level()
         self.ship.center_ship()
         self.game_stats.game_active = True

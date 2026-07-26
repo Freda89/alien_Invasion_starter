@@ -74,7 +74,7 @@ class GameStats:
             self.hi_score = self.score
             # print(f'Max: {self.max_score}')
 
-    def update_level(self):
+    def update_level(self):     
         self.level += 1
         # print(self.level)
     

@@ -16,7 +16,7 @@ class Button:
         self.settings = game.settings
 
         # set up the font and button size from settings
-        self.font = pygame.font.Font(self.settings.font_file, self.settings.buttons_font_size)
+        self.font = pygame.font.Font(self.settings.font_file, self.settings.button_font_size)
         self.rect = pygame.Rect(0, 0, self.settings.button_w, self.settings.button_h)
         self.rect.center = self.boundaries.center
 

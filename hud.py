@@ -4,7 +4,9 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from alien_invasion import AlienInvasion
 
+
 class HUD:
+    """Heads-up display: scores, level, and lives."""
 
     def __init__(self, game):
         self.game = game
@@ -14,6 +16,8 @@ class HUD:
         self.game_stats = game.game_stats
         self.font = pygame.font.Font(self.settings.font_file, self.settings.HUD_font_size)
         self.padding = 20
+
+        # Initialize images/rects
         self.update_scores()
         self.setup_life_image()
         self.update_level()
@@ -44,8 +48,18 @@ class HUD:
         self.hi_score_rect.midtop = (self.boundaries.centerx, self.padding)
 
     def setup_life_image(self):
-        self.life_image = pygame.Surface((28, 28))
-        self.life_image.fill(self.settings.text_color)
+        # Try to use the ship image for life icons, fallback to a solid square.
+        try:
+            img = pygame.image.load(self.settings.ship_file)
+            img = pygame.transform.scale(img, (self.settings.ship_w // 2, self.settings.ship_h // 2))
+            self.life_image = img.convert_alpha()
+        except Exception:
+            self.life_image = pygame.Surface((28, 28))
+            self.life_image.fill(self.settings.text_color)
+
+        self.update_lives()
+
+    def update_lives(self):
         self.life_rects = []
         for i in range(self.game_stats.ship_left):
             life_rect = self.life_image.get_rect()
@@ -61,13 +75,13 @@ class HUD:
         self.level_rect = self.level_image.get_rect()
         self.level_rect.topleft = (self.padding, self.padding + 40)
 
+    def draw_lives(self):
+        for life_rect in self.life_rects:
+            self.screen.blit(self.life_image, life_rect)
+
     def draw(self):
         self.screen.blit(self.max_score_image, self.max_score_rect)
         self.screen.blit(self.score_image, self.score_rect)
         self.screen.blit(self.hi_score_image, self.hi_score_rect)
         self.screen.blit(self.level_image, self.level_rect)
-        if hasattr(self, 'life_image') and hasattr(self, 'life_rects'):
-            for life_rect in self.life_rects:
-                self.screen.blit(self.life_image, life_rect)
-
-
+        self.draw_lives()

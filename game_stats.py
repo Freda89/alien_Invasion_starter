@@ -44,6 +44,9 @@ class GameStats:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.path.write_text(contents)
 
+    def save_scores(self):
+        self.save_score()
+
     def reset_stats(self):
         self.ship_left = self.settings.starting_ship_count
         self.score = 0
@@ -53,15 +56,12 @@ class GameStats:
     def update(self, collisions):
         # update the player's score after aliens are hit
         self._update_score(collisions)
-        # update max_socre
         self._update_max_score()
-
-        # update hi_score
-        self._update_hi_score
+        self._update_hi_score()
 
     def _update_score(self, collisions):
-        for alien in collisions.values():
-            self.score += self.settings.alien_points
+        for collided_aliens in collisions.values():
+            self.score += self.settings.alien_points * len(collided_aliens)
             print(f'Basic {self.score}')
 
     def _update_max_score(self):

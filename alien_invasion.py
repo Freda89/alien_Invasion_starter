@@ -9,6 +9,7 @@ from game_stats import GameStats
 from ship import Ship
 from time import sleep
 from button import Button
+from hud import HUD
 
 
 class AlienInvasion:
@@ -19,12 +20,14 @@ class AlienInvasion:
         self.settings = Settings()
         self.settings.initialize_dynamic_settings()
         self.game_stats = GameStats(self)
+
         self.screen = pygame.display.set_mode(
             (self.settings.screen_w, self.settings.screen_h)
         )
         pygame.display.set_caption(self.settings.name)
         self.clock = pygame.time.Clock()
         self.running = True
+        self.HUD = HUD(self)
 
         # Load the background once so the game does not have to reload it every frame.
         self.bg = pygame.image.load(self.settings.bg_file)
@@ -54,9 +57,12 @@ class AlienInvasion:
 
     def _check_collisions(self):
         # A bullet and alien disappear when their rectangles touch.
-        pygame.sprite.groupcollide(
+        collisions = pygame.sprite.groupcollide(
             self.arsenal.arsenal, self.alien_fleet.fleet, True, True
         )
+        if collisions:
+            self.game_stats.update(collisions)
+            self.HUD.update_scores()
 
         # Start a fresh wave after the player clears every alien.
         if not self.alien_fleet.fleet:
@@ -72,8 +78,9 @@ class AlienInvasion:
         if ship_hit or alien_reached_bottom:
             self._reset_level()
             self.settings.increase_difficulty()
-            # update fame stats level
-            self.game_stats.update_level
+            # update game stats level
+            self.game_stats.update_level()
+            self.HUD.update_scores()
             # update HUD view
 
     def _reset_level(self):
@@ -88,6 +95,7 @@ class AlienInvasion:
         # reset the game state and start fresh
         self.settings.initialize_dynamic_settings()
         self.game_stats.reset_stats()
+        self.HUD.update_scores()
         self._reset_level()
         self.ship.center_ship()
         self.game_stats.game_active = True
@@ -98,7 +106,8 @@ class AlienInvasion:
         self.screen.blit(self.bg, (0, 0))
         self.ship.draw()
         self.alien_fleet.draw()
-        # draw HUD 
+        self.HUD.draw()
+
 
         if not self.game_stats.game_active:
             self.play_button.draw()
@@ -110,6 +119,7 @@ class AlienInvasion:
         # Turn keyboard events into movement or shooting actions.
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                self.game_stats.save_scores()
                 self._quit_game()
             elif event.type == pygame.KEYDOWN and self.game_stats.game_active:
                 self._check_keydown_events(event)
@@ -139,7 +149,7 @@ class AlienInvasion:
             # Only play the sound when a bullet was actually created.
             self.laser_sound.play()
         elif event.key == pygame.K_q:
-            self._quit_game()
+                self.game_stats.save_scores()
 
     def _quit_game(self):
         # Stop Pygame cleanly before ending the program.

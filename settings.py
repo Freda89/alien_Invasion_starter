@@ -11,28 +11,29 @@ class Settings:
     # This is the one place to change the game's sizes and speeds.
 
     def __init__(self):
+        self.base_dir = Path(__file__).resolve().parent
         self.name: str = "Alien Invasion"
         self.screen_w: int = 1200
         self.screen_h: int = 800
         self.FPS: int = 60  
-        self.bg_file = Path.cwd() / 'Assets' / 'images' / 'Background.png'
+        self.bg_file = self.base_dir / 'Assets' / 'images' / 'Background.png'
         self.difficulty_scale = 1.1
-        self.scores_file = Path.cwd() / 'Assets' / 'files' / 'scores.json'
+        self.scores_file = self.base_dir / 'Assets' / 'files' / 'scores.json'
 
-        self.ship_file = Path.cwd() / 'Assets' / 'images' / 'Ship.png'
+        self.ship_file = self.base_dir / 'Assets' / 'images' / 'Ship.png'
         self.ship_w = 40
         self.ship_h = 60
         self.ship_speed = 5
         self.starting_ship_count = 3
 
-        self.bullet_file = Path.cwd() / 'Assets' / 'images' / 'LaserBlast.png'
-        self.laser_sound = Path.cwd() / 'Assets' / 'sound' / 'laser.mp3'
-        self.impact_sound = Path.cwd() / 'Assets' / 'sound' / 'impactSound.mp3'
+        self.bullet_file = self.base_dir / 'Assets' / 'images' / 'LaserBlast.png'
+        self.laser_sound = self.base_dir / 'Assets' / 'sound' / 'laser.mp3'
+        self.impact_sound = self.base_dir / 'Assets' / 'sound' / 'impactSound.mp3'
         self.bullet_speed = 5
         
         self.bullets_amount = 3  # This stops the player from shooting unlimited lasers.
 
-        self.alien_file = Path.cwd() / 'Assets' / 'images' / 'enemy_4.png'
+        self.alien_file = self.base_dir / 'Assets' / 'images' / 'enemy_4.png'
         self.alien_w = 40
         self.alien_h = 40
         self.fleet_speed = 1
@@ -46,7 +47,7 @@ class Settings:
         self.text_color = (255,255,255)
         self.button_font_size = 48
         self.HUD_font_size = 20
-        self.font_file = Path.cwd() / 'Assets' / 'Fonts' / 'Silkscreen' / 'Silkscreen-Expanded.ttf'
+        self.font_file = self.base_dir / 'Assets' / 'Fonts' / 'Silkscreen' / 'Silkscreen-Expanded.ttf'
 
 
     def initialize_dynamic_settings(self):

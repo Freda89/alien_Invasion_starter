@@ -1,48 +1,42 @@
-"""Program: Alien Invasion
-Author: Freda Acquah
-Purpose: Create the start/play button displayed before the game begins.
-Date: 2026-07-26
-"""
+"""Create the play button displayed before the game begins.
+Autor: Fred Acquah
+Link for button image: https://pngtree.com/free-png-vectors/play-button"""
 
-import pygame.font
-
+import pygame
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from alien_invasion import AlienInvasion
 
+
 class Button:
-    """A simple button for the game screen with text and click detection."""
+    """Display an image-based button and detect clicks on it."""
 
     def __init__(self, game: 'AlienInvasion', msg):
-        # save the main game object so we can access the screen and settings
+        """Initialize the button image, rectangle, and position."""
         self.game = game
         self.screen = game.screen
         self.boundaries = self.screen.get_rect()
         self.settings = game.settings
 
-        # set up the font and button size from settings
-        self.font = pygame.font.Font(self.settings.font_file, self.settings.button_font_size)
         self.rect = pygame.Rect(0, 0, self.settings.button_w, self.settings.button_h)
         self.rect.center = self.boundaries.center
+        self._load_image()
 
-        # make the text image for the button
-        self._prep_msg(msg)
-
-    def _prep_msg(self, msg):
-        # render the text into an image so pygame can draw it
-        self.msg_image = self.font.render(msg, True, self.settings.text_color, None)
-        self.msg_image_rect = self.msg_image.get_rect()
-        self.msg_image_rect.center = self.rect.center
+    def _load_image(self):
+        """Load and scale the play button image for the current screen."""
+        image_path = self.settings.base_dir / 'Assets' / 'images' / 'Play button.png'
+        self.image = pygame.image.load(str(image_path)).convert_alpha()
+        self.image = pygame.transform.scale(self.image, (self.rect.width, self.rect.height))
+        self.image_rect = self.image.get_rect(center=self.rect.center)
 
     def draw(self):
-        # fill the button rectangle and then draw the text on top
-        self.screen.fill(self.settings.button_color, self.rect)
-        self.screen.blit(self.msg_image, self.msg_image_rect)
+        """Draw the play button image to the screen."""
+        self.screen.blit(self.image, self.image_rect)
 
     def check_clicked(self, mouse_pos):
-        # check if the mouse click is inside the button area
-        return self.rect.collidepoint(mouse_pos)
+        """Return True when the mouse click is inside the button area."""
+        return self.image_rect.collidepoint(mouse_pos)
 
 
     

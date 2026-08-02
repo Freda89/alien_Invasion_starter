@@ -1,11 +1,10 @@
-"""Program: Alien Invasion
+"""Manage the alien fleet's custom pattern and movement.
 Author: Freda Acquah
-Purpose: Manage the alien fleet, its formation, and movement.
-Date: 2026-07-26
 """
 
 import pygame
 from typing import TYPE_CHECKING
+
 from alien import Alien
 
 if TYPE_CHECKING:
@@ -13,73 +12,50 @@ if TYPE_CHECKING:
 
 
 class AlienFleet:
+    """Coordinate the alien fleet and its movement across the screen."""
+
     def __init__(self, game: 'AlienInvasion'):
+        """Initialize the fleet and create its initial formation."""
         self.game = game
         self.settings = game.settings
         self.screen = game.screen
-        # Keeping aliens in one group lets us move them as a team.
         self.fleet = pygame.sprite.Group()
-        self.fleet_direction = 1  # 1 is right and -1 is left.
+        self.fleet_direction = 1
         self.fleet_drop_speed = self.settings.fleet_drop_speed
 
         self.create_fleet()
 
     def create_fleet(self):
-        alien_w = self.settings.alien_w
-        alien_h = self.settings.alien_h
-        screen_w = self.settings.screen_w
-        screen_h = self.settings.screen_h
+        """Create a custom wedge formation of aliens for the current level."""
+        row_widths = self._build_wedge_rows()
+        self._create_patterned_fleet(row_widths)
 
-        fleet_w, fleet_h = self.calculate_fleet_size(
-            alien_w, screen_w, alien_h, screen_h
-        )
+    def _build_wedge_rows(self) :
+        """Return the row sizes that define the wedge-shaped fleet pattern."""
+        return [3, 4, 5, 6, 5, 4, 3]
 
-        x_offset, y_offset, vertical_spacing = self.calculate_offsets(
-            alien_w, alien_h, screen_w, fleet_w
-        )
+    def _create_patterned_fleet(self, row_widths: list[int]):
+        """Create every alien in the fleet using the supplied row widths."""
+        self.fleet_direction = 1
+        vertical_spacing = self.settings.alien_h + 18
+        starting_y = 70
 
-        self._create_rectangle_fleet(
-            alien_w, fleet_w, fleet_h, x_offset, y_offset, vertical_spacing
-        )
+        for row_index, row_width in enumerate(row_widths):
+            row_pixels = row_width * self.settings.alien_w + (row_width - 1) * 10
+            starting_x = (self.settings.screen_w - row_pixels) // 2
+            current_y = starting_y + row_index * vertical_spacing
 
-    def _create_rectangle_fleet(
-        self, alien_w, fleet_w, fleet_h, x_offset, y_offset, vertical_spacing
-    ):
-        for row in range(fleet_h):
-            current_y = y_offset + row * vertical_spacing
-            for col in range(fleet_w):
-                current_x = alien_w * col + x_offset
+            for column_index in range(row_width):
+                current_x = starting_x + column_index * (self.settings.alien_w + 10)
                 self._create_alien(current_x, current_y)
 
-    def calculate_offsets(self, alien_w, alien_h, screen_w, fleet_w):
-        fleet_horizontal_space = fleet_w * alien_w
-        x_offset = int((screen_w - fleet_horizontal_space) / 2)
-        y_offset = 10
-        vertical_spacing = alien_h + 10  # Give each row a small gap.
-        return x_offset, y_offset, vertical_spacing
-
-    def calculate_fleet_size(self, alien_w, screen_w, alien_h, screen_h):
-        fleet_w = screen_w // alien_w
-        fleet_h = (screen_h // 2) // alien_h
-
-        if fleet_w % 2 == 0:
-            fleet_w -= 1
-        else:
-            fleet_w -= 2
-
-        if fleet_h % 2 == 0:
-            fleet_h -= 1
-        else:
-            fleet_h -= 2
-
-        return fleet_w, int(fleet_h)
-
-    def _create_alien(self, current_x: int, current_y: int):
+    def _create_alien(self, current_x: float, current_y: float):
+        """Create and add one alien sprite to the fleet."""
         new_alien = Alien(self, current_x, current_y)
         self.fleet.add(new_alien)
 
     def _check_fleet_edges(self):
-        # If one alien hits an edge, the whole group goes down and turns around.
+        """Reverse the fleet direction and drop it when one alien reaches an edge."""
         for alien in self.fleet:
             if alien.check_edges():
                 self._drop_alien_fleet()
@@ -87,29 +63,27 @@ class AlienFleet:
                 break
 
     def _drop_alien_fleet(self):
-        # Move every alien down together to make the group look like one fleet.
+        """Move every alien down together to preserve the fleet movement effect."""
         for alien in self.fleet:
             alien.y += self.fleet_drop_speed
             alien.rect.y = alien.y
 
-
     def update_fleet(self):
-        # Check the edge first, then move the aliens for this frame.
+        """Check the fleet edges and move the fleet for the current frame."""
         self._check_fleet_edges()
         self.fleet.update()
 
-
     def draw(self):
-        alien: Alien
+        """Draw every alien in the fleet to the screen."""
         for alien in self.fleet:
             alien.draw_alien()
 
     def check_collisions(self, other_group):
-        """Remove aliens and sprites from another group when they overlap."""
+        """Remove aliens and sprites from another group when their masks overlap."""
         return pygame.sprite.groupcollide(self.fleet, other_group, True, True)
 
     def check_fleet_bottom(self):
-        """Return True if any alien has reached the bottom of the screen."""
+        """Return True when any alien reaches the bottom edge of the screen."""
         for alien in self.fleet:
             if alien.rect.bottom >= self.settings.screen_h:
                 return True

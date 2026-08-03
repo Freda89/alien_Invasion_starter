@@ -58,6 +58,15 @@ class GameStats:
         self.level = 1
         self.game_active = False
 
+    def lose_ship(self):
+        """Reduce the remaining ship count and return True when the game is over."""
+        self.ship_left -= 1
+        if self.ship_left <= 0:
+            self.game_active = False
+            self.save_scores()
+            return True
+        return False
+
     def update(self, collisions):
         # update the player's score after aliens are hit
         self._update_score(collisions)

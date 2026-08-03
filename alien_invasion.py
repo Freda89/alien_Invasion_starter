@@ -43,6 +43,10 @@ class AlienInvasion:
         self.laser_sound = pygame.mixer.Sound(str(self.settings.laser_sound))
         self.laser_sound.set_volume(0.5)
 
+        pygame.mixer.music.load(str(self.settings.background_music))
+        pygame.mixer.music.set_volume(0.3)
+        pygame.mixer.music.play(-1)
+
         # These objects hold the player, bullets, and aliens for the whole game.
         self.arsenal = Arsenal(self)
         self.ship = Ship(self, self.arsenal)
@@ -87,13 +91,23 @@ class AlienInvasion:
             for alien in self.alien_fleet.fleet
         )
         if ship_hit or alien_reached_bottom:
-            self._reset_level()
-            self.settings.increase_difficulty()
-            # update game stats level
-            self.game_stats.update_level()
+            self._handle_life_lost()
+
+    def _handle_life_lost(self):
+        """Remove a life, reset the current level, and end the game when needed."""
+        if self.game_stats.lose_ship():
+            self.game_stats.game_active = False
+            self.HUD.update_lives()
             self.HUD.update_scores()
             self.HUD.update_level()
-            # update HUD view
+            self._reset_level()
+            pygame.mouse.set_visible(True)
+            return
+
+        self._reset_level()
+        self.HUD.update_lives()
+        self.HUD.update_scores()
+        self.HUD.update_level()
 
     def _reset_level(self):
         # Clear old sprites, put the ship back in the middle, and make a new fleet.
@@ -109,6 +123,7 @@ class AlienInvasion:
         self.game_stats.reset_stats()
         self.HUD.update_scores()
         self.HUD.update_level()
+        self.HUD.update_lives()
         self._reset_level()
         self.ship.center_ship()
         self.game_stats.game_active = True
@@ -167,6 +182,7 @@ class AlienInvasion:
     def _quit_game(self):
         # Stop Pygame cleanly before ending the program.
         self.running = False
+        pygame.mixer.music.stop()
         pygame.quit()
         sys.exit()
 

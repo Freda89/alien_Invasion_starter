@@ -28,7 +28,7 @@ class Settings:
 
         self.bullet_file = self.base_dir / 'Assets' / 'images' / 'LaserBlast.png'
         self.laser_sound = self.base_dir / 'Assets' / 'sound' / 'laser.mp3'
-        self.impact_sound = self.base_dir / 'Assets' / 'sound' / 'impactSound.mp3'
+        self.background_music = self.base_dir / 'Assets' / 'sound' / 'backgroundmusic.mp3'
         self.bullet_speed = 5
         
         self.bullets_amount = 3  # This stops the player from shooting unlimited lasers.
